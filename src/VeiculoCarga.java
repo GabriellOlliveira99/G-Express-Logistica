@@ -1,0 +1,29 @@
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+public class VeiculoCarga extends VeiculoStructure implements Rastreavel {
+    private double capacidadeToneladas;
+
+    public VeiculoCarga(String modelo, BigDecimal valorDiaria, double capacidadeToneladas) {
+        super(modelo, valorDiaria);
+        this.capacidadeToneladas = capacidadeToneladas;
+    }
+
+    @Override
+    public BigDecimal calcularAluguel() {
+        if (this.capacidadeToneladas > 10) {
+            return getValorDiaria().multiply(new BigDecimal("1.20")).setScale(2, RoundingMode.HALF_UP);
+        }
+        return getValorDiaria();
+    }
+
+    @Override
+    public boolean conectarSatelite(String codigo) {
+        return codigo.equals("GEX-123");
+    }
+
+    @Override
+    public void exibirDados() {
+        System.out.println("Modelo: " + getModelo() + " | Diária Base: R$ " + getValorDiaria() + " | Capacidade: " + this.capacidadeToneladas + "t");
+    }
+}
