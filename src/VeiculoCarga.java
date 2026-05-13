@@ -26,4 +26,11 @@ public class VeiculoCarga extends VeiculoStructure implements Rastreavel {
     public void exibirDados() {
         System.out.println("Modelo: " + getModelo() + " | Diária Base: R$ " + getValorDiaria() + " | Capacidade: " + this.capacidadeToneladas + "t");
     }
+
+    public void setCapacidadeToneladas(double capacidadeToneladas) throws ValorInvalidoException{
+        if(capacidadeToneladas <= 0){
+            throw new ValorInvalidoException("A capacidade de carga deve ser positiva!");
+        }
+        this.capacidadeToneladas = capacidadeToneladas;
+    }
 }
