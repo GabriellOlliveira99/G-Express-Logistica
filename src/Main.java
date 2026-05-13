@@ -1,6 +1,8 @@
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
@@ -24,5 +26,35 @@ public class Main {
             }
             System.out.println("------------------------------------");
         }
+
+        Scanner scanner = new Scanner(System.in);
+        boolean ok = false;
+        while (!ok) {
+            try {
+                System.out.println("--- Cadastro de Veículo G-Express ---");
+                System.out.print("Digite a capacidade de carga (toneladas): ");
+                double capacidade = scanner.nextDouble();
+
+                if (capacidade <= 0) {
+                    throw new ValorInvalidoException("A capacidade de carga deve ser positiva!");
+                }
+
+                System.out.print("Digite o valor da diária: ");
+                double diaria = scanner.nextDouble();
+
+                if (diaria <= 0) {
+                    throw new ValorInvalidoException("O valor da diária não pode ser zero ou negativo!");
+                }
+
+                ok = true;
+                System.out.println("✅ Veículo validado com sucesso!");
+
+            } catch (InputMismatchException e) {
+                System.out.println("\n❌ ERRO DE ENTRADA: Você digitou letras em vez de números.");
+            } catch (ValorInvalidoException e) {
+                System.out.println("\n❌ ERRO DE NEGÓCIO: " + e.getMessage());
+            }
+        }
+        scanner.close();
     }
 }
