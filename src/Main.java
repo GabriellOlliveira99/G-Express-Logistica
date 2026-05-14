@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args){
+    public static void main(String[] args) {
         List<VeiculoStructure> frota = new ArrayList<>();
 
         try {
-            frota.add(new VeiculoCarga("VW Delivery", new BigDecimal("400.00"), 8.0));
-            frota.add(new VeiculoCarga("Scania R500", new BigDecimal("800.00"), 15.0));
-            frota.add(new VeiculoPasseio("Fiat Uno", new BigDecimal("100.00"), 5));
-            frota.add(new VeiculoPasseio("Honda Civic", new BigDecimal("250.00"), 5));
+            frota.add(new VeiculoCarga("VW Delivery", new BigDecimal("400.00"), 8.0, TipoCombustivel.DIESEL));
+            frota.add(new VeiculoCarga("Scania R500", new BigDecimal("800.00"), 15.0, TipoCombustivel.DIESEL));
+            frota.add(new VeiculoPasseio("Fiat Uno", new BigDecimal("100.00"), 5, TipoCombustivel.GASOLINA));
+            frota.add(new VeiculoPasseio("Honda Civic", new BigDecimal("250.00"), 5, TipoCombustivel.ELETRICO));
         } catch (ValorInvalidoException e) {
             System.out.println("❌ Erro crítico ao carregar dados de teste: " + e.getMessage());
         }
@@ -47,7 +47,9 @@ public class Main {
                         double capCarga = scanner.nextDouble();
                         scanner.nextLine();
 
-                        frota.add( new VeiculoCarga(modCarga,diariaCarga,capCarga));
+                        TipoCombustivel combustCarga = escolherCombustivel(scanner);
+                        frota.add(new VeiculoCarga(modCarga, diariaCarga, capCarga, combustCarga));
+
                         System.out.println("✅ Caminhão cadastrado com sucesso!");
                         break;
 
@@ -63,7 +65,9 @@ public class Main {
                         int qtdPassageiros = scanner.nextInt();
                         scanner.nextLine();
 
-                        frota.add(new VeiculoPasseio(modPasseio, diariaPasseio, qtdPassageiros));
+                        TipoCombustivel combustPass = escolherCombustivel(scanner);
+                        frota.add(new VeiculoPasseio(modPasseio, diariaPasseio, qtdPassageiros, combustPass));
+
                         System.out.println("✅ Carro de passeio cadastrado com sucesso!");
                         break;
 
@@ -104,5 +108,26 @@ public class Main {
         }
         scanner.close();
     }
+
+    public static TipoCombustivel escolherCombustivel(Scanner scanner) {
+        System.out.println("\nSelecione o Combustível:");
+        System.out.println("1 - GASOLINA | 2 - DIESEL | 3 - FLEX | 4 - ELETRICO");
+        System.out.print("Escolha: ");
+        int op = scanner.nextInt();
+        scanner.nextLine();
+
+        return switch (op) {
+            case 1 -> TipoCombustivel.GASOLINA;
+            case 2 -> TipoCombustivel.DIESEL;
+            case 3 -> TipoCombustivel.FLEX;
+            case 4 -> TipoCombustivel.ELETRICO;
+            default -> {
+                System.out.println("⚠️ Opção inválida! Definindo como FLEX por segurança.");
+                yield TipoCombustivel.FLEX;
+            }
+        };
+    }
 }
+
+
 

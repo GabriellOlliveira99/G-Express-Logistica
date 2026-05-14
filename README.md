@@ -4,17 +4,28 @@ Este projeto foi desenvolvido como parte dos meus estudos avançados em **Progra
 
 ## 🚀 Conceitos de POO Aplicados:
 
-- **Abstração:** Utilização da classe abstrata `VeiculoStructure` como molde principal, garantindo que nenhum veículo seja instanciado sem as propriedades básicas de modelo e valor de diária.
+- **Abstração:** Utilização da classe abstrata `VeiculoStructure` como molde principal, garantindo que nenhum veículo seja instanciado sem as propriedades básicas.
 - **Herança:** Implementação de classes especializadas (`VeiculoPasseio` e `VeiculoCarga`) que herdam e estendem o comportamento da classe base.
-- **Polimorfismo:** Sobrescrita de métodos (`@Override`) para permitir comportamentos diferentes no cálculo do aluguel. Por exemplo, veículos de carga com mais de 10 toneladas recebem automaticamente um acréscimo de 20% no valor final.
-- **Interfaces:** Uso da interface `Rastreavel` para garantir que apenas veículos específicos (como os de carga) possuam o contrato de conexão via satélite, separando responsabilidades de forma limpa.
-- **Encapsulamento:** Proteção de atributos sensíveis e uso de `BigDecimal` para garantir precisão absoluta nos cálculos financeiros.
+- **Polimorfismo:** Sobrescrita de métodos (`@Override`) para cálculos dinâmicos de aluguel.
+- **Interfaces:** Uso da interface `Rastreavel` para garantir que apenas veículos específicos possuam o contrato de conexão via satélite.
+- **Encapsulamento & Enums:** Uso de `TipoCombustivel` (Enum) para garantir que o sistema aceite apenas categorias válidas, eliminando erros de digitação e aumentando a segurança de tipos.
+
+## 🛡️ Tratamento de Erros e Segurança:
+
+- **Custom Exceptions:** Criação da `ValorInvalidoException` para impedir que veículos nasçam com valores negativos ou zerados.
+- **Data Validation:** Uso de blocos `try-catch` na `Main` para capturar erros de entrada (`InputMismatchException`) e regras de negócio, mantendo o sistema rodando mesmo após falhas do usuário.
+- **Clean Code:** Implementação de métodos auxiliares estáticos para organizar o fluxo de entrada de dados no menu interativo.
+
+## 💰 Regras de Negócio Implementadas:
+
+1. **Carga Pesada:** Acréscimo automático de **20%** no aluguel para caminhões com capacidade superior a 10 toneladas.
+2. **Sustentabilidade:** Desconto exclusivo de **10%** para veículos de passeio do tipo **ELÉTRICO**.
 
 ## 🛠️ Tecnologias Utilizadas:
 
-- **Java 17+** (Utilizando as últimas funcionalidades da linguagem).
-- **Git & GitHub:** Para controle de versão e versionamento semântico.
-- **IntelliJ IDEA:** Como ambiente de desenvolvimento principal.
+- **Java 17+**
+- **Git & GitHub**
+- **IntelliJ IDEA**
 
 ---
-*Projeto em constante evolução. Próximo passo: Implementação de Tratamento de Exceções (Custom Exceptions).*
+*Projeto em constante evolução. Próximo passo sugerido: Persistência de dados ou Collections avançadas.*
