@@ -5,52 +5,99 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args){
         List<VeiculoStructure> frota = new ArrayList<>();
 
-        frota.add(new VeiculoCarga("VW Delivery", new BigDecimal("400.00"), 8.0));
-        frota.add(new VeiculoCarga("Scania R500", new BigDecimal("800.00"), 15.0));
-        frota.add(new VeiculoPasseio("Fiat Uno", new BigDecimal("100.00"), 5));
-        frota.add(new VeiculoPasseio("Honda Civic", new BigDecimal("250.00"), 5));
-
-        System.out.println("=== RELATÓRIO DE FROTA G-EXPRESS ===\n");
-
-        for (VeiculoStructure v : frota) {
-            v.exibirDados();
-            System.out.println("Aluguel calculado: R$ " + v.calcularAluguel());
-
-            if (v instanceof Rastreavel) {
-                Rastreavel rastreado = (Rastreavel) v;
-                boolean conectado = rastreado.conectarSatelite("GEX-123");
-                System.out.println(">> Status do Satélite: " + (conectado ? "CONECTADO" : "FALHA NA CONEXÃO"));
-            }
-            System.out.println("------------------------------------");
+        try {
+            frota.add(new VeiculoCarga("VW Delivery", new BigDecimal("400.00"), 8.0));
+            frota.add(new VeiculoCarga("Scania R500", new BigDecimal("800.00"), 15.0));
+            frota.add(new VeiculoPasseio("Fiat Uno", new BigDecimal("100.00"), 5));
+            frota.add(new VeiculoPasseio("Honda Civic", new BigDecimal("250.00"), 5));
+        } catch (ValorInvalidoException e) {
+            System.out.println("❌ Erro crítico ao carregar dados de teste: " + e.getMessage());
         }
 
         Scanner scanner = new Scanner(System.in);
-        boolean ok = false;
-        while (!ok) {
+        boolean rodando = true;
+        while (rodando) {
+            System.out.println("\n=================================");
+            System.out.println("       G-EXPRESS LOGÍSTICA       ");
+            System.out.println("=================================");
+            System.out.println("1 - Cadastrar Veículo de Carga");
+            System.out.println("2 - Cadastrar Veículo de Passeio");
+            System.out.println("3 - Gerar Relatório de Frota");
+            System.out.println("0 - Sair do Sistema");
+            System.out.print("Escolha uma opção: ");
+
+
             try {
-                System.out.println("--- Cadastro de Veículo G-Express ---");
-                System.out.print("Digite a capacidade de carga (toneladas): ");
-                double capacidade = scanner.nextDouble();
+                int opcao = scanner.nextInt();
+                scanner.nextLine();
 
-                if (capacidade <= 0) {
-                    throw new ValorInvalidoException("A capacidade de carga deve ser positiva!");
+                switch (opcao) {
+                    case 1:
+                        System.out.println("\n--- Cadastro de Veículo de Carga ---");
+                        System.out.print("Digite o modelo: ");
+                        String modCarga = scanner.nextLine();
+
+                        System.out.print("Digite o valor da diária: ");
+                        BigDecimal diariaCarga = scanner.nextBigDecimal();
+
+                        System.out.print("Digite a capacidade de carga (toneladas): ");
+                        double capCarga = scanner.nextDouble();
+                        scanner.nextLine();
+
+                        frota.add( new VeiculoCarga(modCarga,diariaCarga,capCarga));
+                        System.out.println("✅ Caminhão cadastrado com sucesso!");
+                        break;
+
+                    case 2:
+                        System.out.println("\n--- Cadastro de Veículo de Passeio ---");
+                        System.out.print("Digite o modelo: ");
+                        String modPasseio = scanner.nextLine();
+
+                        System.out.print("Digite o valor da diária: ");
+                        BigDecimal diariaPasseio = scanner.nextBigDecimal();
+
+                        System.out.print("Digite a quantidade de passageiros: ");
+                        int qtdPassageiros = scanner.nextInt();
+                        scanner.nextLine();
+
+                        frota.add(new VeiculoPasseio(modPasseio, diariaPasseio, qtdPassageiros));
+                        System.out.println("✅ Carro de passeio cadastrado com sucesso!");
+                        break;
+
+                    case 3:
+                        System.out.println("\n=== RELATÓRIO DE FROTA G-EXPRESS ===\n");
+                        if (frota.isEmpty()) {
+                            System.out.println("Nenhum veículo na frota.");
+                        } else {
+                            for (VeiculoStructure v : frota) {
+                                v.exibirDados();
+                                System.out.println("Aluguel calculado: R$ " + v.calcularAluguel());
+
+                                if (v instanceof Rastreavel) {
+                                    Rastreavel rastreado = (Rastreavel) v;
+                                    boolean conectado = rastreado.conectarSatelite("GEX-123");
+                                    System.out.println(">> Status do Satélite: " + (conectado ? "CONECTADO" : "FALHA NA CONEXÃO"));
+                                }
+                                System.out.println("------------------------------------");
+                            }
+                        }
+                        break;
+
+                    case 0:
+                        rodando = false;
+                        System.out.println("Saindo...");
+                        break;
+
+                    default:
+                        System.out.println("⚠️ Opção inválida! Escolha um número de 0 a 3.");
                 }
-
-                System.out.print("Digite o valor da diária: ");
-                double diaria = scanner.nextDouble();
-
-                if (diaria <= 0) {
-                    throw new ValorInvalidoException("O valor da diária não pode ser zero ou negativo!");
-                }
-
-                ok = true;
-                System.out.println("✅ Veículo validado com sucesso!");
 
             } catch (InputMismatchException e) {
                 System.out.println("\n❌ ERRO DE ENTRADA: Você digitou letras em vez de números.");
+                scanner.nextLine();
             } catch (ValorInvalidoException e) {
                 System.out.println("\n❌ ERRO DE NEGÓCIO: " + e.getMessage());
             }
@@ -58,3 +105,4 @@ public class Main {
         scanner.close();
     }
 }
+

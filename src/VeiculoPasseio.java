@@ -3,8 +3,8 @@ import java.math.BigDecimal;
 public class VeiculoPasseio extends VeiculoStructure {
     private int passageiros;
 
-    public VeiculoPasseio(String modelo, BigDecimal valorDiaria, int passageiros) {
-        super(modelo, valorDiaria);
+    public VeiculoPasseio(String modelo, BigDecimal valorDiaria, int passageiros) throws ValorInvalidoException {
+        super(modelo, valorDiaria); // Passa o aviso pro pai
         this.passageiros = passageiros;
     }
 

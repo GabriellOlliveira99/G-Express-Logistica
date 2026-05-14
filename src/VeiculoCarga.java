@@ -4,9 +4,9 @@ import java.math.RoundingMode;
 public class VeiculoCarga extends VeiculoStructure implements Rastreavel {
     private double capacidadeToneladas;
 
-    public VeiculoCarga(String modelo, BigDecimal valorDiaria, double capacidadeToneladas) {
+    public VeiculoCarga(String modelo, BigDecimal valorDiaria, double capacidadeToneladas) throws ValorInvalidoException {
         super(modelo, valorDiaria);
-        this.capacidadeToneladas = capacidadeToneladas;
+        setCapacidadeToneladas(capacidadeToneladas);
     }
 
     @Override

@@ -4,9 +4,9 @@ public abstract class VeiculoStructure {
     private String modelo;
     private BigDecimal valorDiaria;
 
-    public VeiculoStructure(String modelo, BigDecimal valorDiaria) {
+    public VeiculoStructure(String modelo, BigDecimal valorDiaria) throws ValorInvalidoException {
         this.modelo = modelo;
-        this.valorDiaria = valorDiaria;
+        setValorDiaria(valorDiaria);
     }
 
     public abstract BigDecimal calcularAluguel();
