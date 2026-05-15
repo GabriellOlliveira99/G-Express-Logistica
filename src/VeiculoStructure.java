@@ -4,11 +4,14 @@ public abstract class VeiculoStructure {
     private String modelo;
     private BigDecimal valorDiaria;
     private TipoCombustivel tipoCombustivel;
+    private static int totalVeiculos = 0;
 
     public VeiculoStructure(String modelo, BigDecimal valorDiaria, TipoCombustivel tipoCombustivel) throws ValorInvalidoException {
         this.modelo = modelo;
         this.tipoCombustivel = tipoCombustivel;
         setValorDiaria(valorDiaria);
+
+        totalVeiculos++;
     }
 
     public abstract BigDecimal calcularAluguel();
@@ -27,6 +30,10 @@ public abstract class VeiculoStructure {
 
     public TipoCombustivel getTipoCombustivel() {
         return tipoCombustivel;
+    }
+
+    public static int getTotalVeiculos() {
+        return totalVeiculos;
     }
 
     public void setValorDiaria(BigDecimal ValorDiaria) throws ValorInvalidoException {
