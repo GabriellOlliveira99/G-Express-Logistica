@@ -1,21 +1,12 @@
 import java.math.BigDecimal;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.InputMismatchException;
-import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        List<VeiculoStructure> frota = new ArrayList<>();
-
-        try {
-            frota.add(new VeiculoCarga("VW Delivery", new BigDecimal("400.00"), 8.0, TipoCombustivel.DIESEL));
-            frota.add(new VeiculoCarga("Scania R500", new BigDecimal("800.00"), 15.0, TipoCombustivel.DIESEL));
-            frota.add(new VeiculoPasseio("Fiat Uno", new BigDecimal("100.00"), 5, TipoCombustivel.GASOLINA));
-            frota.add(new VeiculoPasseio("Honda Civic", new BigDecimal("250.00"), 5, TipoCombustivel.ELETRICO));
-        } catch (ValorInvalidoException e) {
-            System.out.println("❌ Erro crítico ao carregar dados de teste: " + e.getMessage());
-        }
+        Map<String, VeiculoStructure> frota = ArquivoUtil.carregarFrota();
 
         Scanner scanner = new Scanner(System.in);
         boolean rodando = true;
@@ -49,7 +40,8 @@ public class Main {
                             scanner.nextLine();
 
                             TipoCombustivel combustCarga = escolherCombustivel(scanner);
-                            frota.add(new VeiculoCarga(modCarga, diariaCarga, capCarga, combustCarga));
+
+                            frota.put(modCarga.toUpperCase(), new VeiculoCarga(modCarga, diariaCarga, capCarga, combustCarga));
 
                             System.out.println("✅ Caminhão cadastrado com sucesso!");
                             break;
@@ -67,7 +59,8 @@ public class Main {
                             scanner.nextLine();
 
                             TipoCombustivel combustPass = escolherCombustivel(scanner);
-                            frota.add(new VeiculoPasseio(modPasseio, diariaPasseio, qtdPassageiros, combustPass));
+
+                            frota.put(modPasseio.toUpperCase(), new VeiculoPasseio(modPasseio, diariaPasseio, qtdPassageiros, combustPass));
 
                             System.out.println("✅ Carro de passeio cadastrado com sucesso!");
                             break;
@@ -77,10 +70,10 @@ public class Main {
                             if (frota.isEmpty()) {
                                 System.out.println("Nenhum veículo na frota.");
                             } else {
-                                System.out.println("Total de veículos cadastrados: " + VeiculoStructure.getTotalVeiculos());
+                                System.out.println("Total de veículos cadastrados: " + frota.size());
                                 System.out.println("------------------------------------");
 
-                                for (VeiculoStructure v : frota) {
+                                for (VeiculoStructure v : frota.values()) {
                                     v.exibirDados();
                                     System.out.println("Aluguel calculado: R$ " + v.calcularAluguel());
 

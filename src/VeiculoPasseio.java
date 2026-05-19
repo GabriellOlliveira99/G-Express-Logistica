@@ -20,4 +20,8 @@ public class VeiculoPasseio extends VeiculoStructure {
     public void exibirDados() {
         System.out.println("Modelo: " + getModelo() + " | Diária: R$ " + getValorDiaria() + " | Passageiros: " + this.passageiros + " | Combustível: " + getTipoCombustivel());
     }
+
+    public int getCapacidadePassageiros() {
+        return passageiros;
+    }
 }
