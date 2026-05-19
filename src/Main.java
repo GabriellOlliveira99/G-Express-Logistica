@@ -1,11 +1,14 @@
 import java.math.BigDecimal;
-import java.util.HashMap;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.InputMismatchException;
 import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+
         Map<String, VeiculoStructure> frota = ArquivoUtil.carregarFrota();
 
         Scanner scanner = new Scanner(System.in);
@@ -24,7 +27,7 @@ public class Main {
 
                 try {
                     int opcao = scanner.nextInt();
-                    scanner.nextLine();
+                    scanner.nextLine(); // Limpa o buffer do teclado
 
                     switch (opcao) {
                         case 1:
@@ -66,23 +69,40 @@ public class Main {
                             break;
 
                         case 3:
-                            System.out.println("\n=== RELATÓRIO DE FROTA G-EXPRESS ===\n");
+                            System.out.println("\n=== RELATÓRIO E SIMULAÇÃO DE FROTA G-EXPRESS ===\n");
                             if (frota.isEmpty()) {
                                 System.out.println("Nenhum veículo na frota.");
                             } else {
-                                System.out.println("Total de veículos cadastrados: " + frota.size());
-                                System.out.println("------------------------------------");
 
-                                for (VeiculoStructure v : frota.values()) {
-                                    v.exibirDados();
-                                    System.out.println("Aluguel calculado: R$ " + v.calcularAluguel());
+                                DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-                                    if (v instanceof Rastreavel) {
-                                        Rastreavel rastreado = (Rastreavel) v;
-                                        boolean conectado = rastreado.conectarSatelite("GEX-123");
-                                        System.out.println(">> Status do Satélite: " + (conectado ? "CONECTADO" : "FALHA NA CONEXÃO"));
-                                    }
+                                try {
+                                    System.out.println("--- Período da Simulação de Aluguel ---");
+                                    System.out.print("Digite a data de RETIRADA (dd/mm/aaaa): ");
+                                    String dataRetText = scanner.nextLine();
+                                    LocalDate dataRetirada = LocalDate.parse(dataRetText, formatador);
+
+                                    System.out.print("Digite a data de DEVOLUÇÃO (dd/mm/aaaa): ");
+                                    String dataDevText = scanner.nextLine();
+                                    LocalDate dataDevolucao = LocalDate.parse(dataDevText, formatador);
+
+                                    System.out.println("\nTotal de veículos cadastrados: " + frota.size());
                                     System.out.println("------------------------------------");
+
+                                    for (VeiculoStructure v : frota.values()) {
+                                        v.exibirDados();
+
+                                        System.out.println("Aluguel calculado para o período: R$ " + v.calcularAluguel(dataRetirada, dataDevolucao));
+
+                                        if (v instanceof Rastreavel) {
+                                            Rastreavel rastreado = (Rastreavel) v;
+                                            boolean conectado = rastreado.conectarSatelite("GEX-123");
+                                            System.out.println(">> Status do Satélite: " + (conectado ? "CONECTADO" : "FALHA NA CONEXÃO"));
+                                        }
+                                        System.out.println("------------------------------------");
+                                    }
+                                } catch (DateTimeParseException e) {
+                                    System.out.println("\n❌ ERRO DE FORMATAÇÃO: Você digitou a data em um formato inválido! Use o padrão dd/mm/aaaa.");
                                 }
                             }
                             break;

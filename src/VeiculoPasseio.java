@@ -1,4 +1,6 @@
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 public class VeiculoPasseio extends VeiculoStructure {
     private int passageiros;
@@ -9,11 +11,21 @@ public class VeiculoPasseio extends VeiculoStructure {
     }
 
     @Override
-    public BigDecimal calcularAluguel() {
-        if (getTipoCombustivel() == TipoCombustivel.ELETRICO) {
-            return getValorDiaria().multiply(new BigDecimal("0.90"));
+    public BigDecimal calcularAluguel(LocalDate dataRetirada, LocalDate dataDevolucao) {
+        long dias = ChronoUnit.DAYS.between(dataRetirada, dataDevolucao);
+
+        if (dias <= 0) {
+            dias = 1;
         }
-        return getValorDiaria();
+
+        BigDecimal totalDias = new BigDecimal(dias);
+        BigDecimal valorTotalBase = getValorDiaria().multiply(totalDias);
+
+        if (getTipoCombustivel() == TipoCombustivel.ELETRICO) {
+            return valorTotalBase.multiply(new BigDecimal("0.90"));
+        }
+
+        return valorTotalBase;
     }
 
     @Override

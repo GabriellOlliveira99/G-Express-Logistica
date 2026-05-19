@@ -1,4 +1,5 @@
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public abstract class VeiculoStructure {
     private String modelo;
@@ -14,7 +15,7 @@ public abstract class VeiculoStructure {
         totalVeiculos++;
     }
 
-    public abstract BigDecimal calcularAluguel();
+    public abstract BigDecimal calcularAluguel(LocalDate dataRetirada, LocalDate dataDevolucao);
 
     public void exibirDados() {
         System.out.println("Modelo: " + modelo + " | Diária: R$ " + valorDiaria + " | Combustível: R$ " + tipoCombustivel);

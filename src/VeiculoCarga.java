@@ -1,5 +1,7 @@
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 public class VeiculoCarga extends VeiculoStructure implements Rastreavel {
     private double capacidadeToneladas;
@@ -10,11 +12,21 @@ public class VeiculoCarga extends VeiculoStructure implements Rastreavel {
     }
 
     @Override
-    public BigDecimal calcularAluguel() {
-        if (this.capacidadeToneladas > 10) {
-            return getValorDiaria().multiply(new BigDecimal("1.20")).setScale(2, RoundingMode.HALF_UP);
+    public BigDecimal calcularAluguel(LocalDate dataRetirada, LocalDate dataDevolucao) {
+        long dias = ChronoUnit.DAYS.between(dataRetirada, dataDevolucao);
+
+        if (dias <= 0) {
+            dias = 1;
         }
-        return getValorDiaria();
+
+        BigDecimal totalDias = new BigDecimal(dias);
+        BigDecimal valorTotalBase = getValorDiaria().multiply(totalDias);
+
+        if (this.capacidadeToneladas > 10) {
+            return valorTotalBase.multiply(new BigDecimal("1.20")).setScale(2, RoundingMode.HALF_UP);
+        }
+
+        return valorTotalBase;
     }
 
     @Override
