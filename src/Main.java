@@ -8,10 +8,9 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-
         Map<String, VeiculoStructure> frota = ArquivoUtil.carregarFrota();
-
         Scanner scanner = new Scanner(System.in);
+        DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         boolean rodando = true;
 
         try {
@@ -21,13 +20,15 @@ public class Main {
                 System.out.println("=================================");
                 System.out.println("1 - Cadastrar Veículo de Carga");
                 System.out.println("2 - Cadastrar Veículo de Passeio");
-                System.out.println("3 - Gerar Relatório de Frota");
+                System.out.println("3 - Listar Relatório de Frota");
+                System.out.println("4 - Alugar Veículo");
+                System.out.println("5 - Devolver Veículo");
                 System.out.println("0 - Sair do Sistema");
                 System.out.print("Escolha uma opção: ");
 
                 try {
                     int opcao = scanner.nextInt();
-                    scanner.nextLine(); // Limpa o buffer do teclado
+                    scanner.nextLine();
 
                     switch (opcao) {
                         case 1:
@@ -38,14 +39,16 @@ public class Main {
                             System.out.print("Digite o valor da diária: ");
                             BigDecimal diariaCarga = scanner.nextBigDecimal();
 
+                            System.out.print("Digite o ano de fabricação: ");
+                            int anoCarga = scanner.nextInt();
+
                             System.out.print("Digite a capacidade de carga (toneladas): ");
                             double capCarga = scanner.nextDouble();
                             scanner.nextLine();
 
                             TipoCombustivel combustCarga = escolherCombustivel(scanner);
 
-                            frota.put(modCarga.toUpperCase(), new VeiculoCarga(modCarga, diariaCarga, capCarga, combustCarga));
-
+                            frota.put(modCarga.toUpperCase(), new VeiculoCarga(modCarga, diariaCarga, anoCarga, capCarga, combustCarga));
                             System.out.println("✅ Caminhão cadastrado com sucesso!");
                             break;
 
@@ -57,54 +60,101 @@ public class Main {
                             System.out.print("Digite o valor da diária: ");
                             BigDecimal diariaPasseio = scanner.nextBigDecimal();
 
+                            System.out.print("Digite o ano de fabricação: ");
+                            int anoPasseio = scanner.nextInt();
+
                             System.out.print("Digite a quantidade de passageiros: ");
                             int qtdPassageiros = scanner.nextInt();
                             scanner.nextLine();
 
                             TipoCombustivel combustPass = escolherCombustivel(scanner);
 
-                            frota.put(modPasseio.toUpperCase(), new VeiculoPasseio(modPasseio, diariaPasseio, qtdPassageiros, combustPass));
-
+                            frota.put(modPasseio.toUpperCase(), new VeiculoPasseio(modPasseio, diariaPasseio, anoPasseio, qtdPassageiros, combustPass));
                             System.out.println("✅ Carro de passeio cadastrado com sucesso!");
                             break;
 
                         case 3:
-                            System.out.println("\n=== RELATÓRIO E SIMULAÇÃO DE FROTA G-EXPRESS ===\n");
+                            System.out.println("\n=== RELATÓRIO DE FROTA G-EXPRESS ===");
                             if (frota.isEmpty()) {
                                 System.out.println("Nenhum veículo na frota.");
                             } else {
-
-                                DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-                                try {
-                                    System.out.println("--- Período da Simulação de Aluguel ---");
-                                    System.out.print("Digite a data de RETIRADA (dd/mm/aaaa): ");
-                                    String dataRetText = scanner.nextLine();
-                                    LocalDate dataRetirada = LocalDate.parse(dataRetText, formatador);
-
-                                    System.out.print("Digite a data de DEVOLUÇÃO (dd/mm/aaaa): ");
-                                    String dataDevText = scanner.nextLine();
-                                    LocalDate dataDevolucao = LocalDate.parse(dataDevText, formatador);
-
-                                    System.out.println("\nTotal de veículos cadastrados: " + frota.size());
-                                    System.out.println("------------------------------------");
-
-                                    for (VeiculoStructure v : frota.values()) {
-                                        v.exibirDados();
-
-                                        System.out.println("Aluguel calculado para o período: R$ " + v.calcularAluguel(dataRetirada, dataDevolucao));
-
-                                        if (v instanceof Rastreavel) {
-                                            Rastreavel rastreado = (Rastreavel) v;
-                                            boolean conectado = rastreado.conectarSatelite("GEX-123");
-                                            System.out.println(">> Status do Satélite: " + (conectado ? "CONECTADO" : "FALHA NA CONEXÃO"));
-                                        }
-                                        System.out.println("------------------------------------");
+                                System.out.println("Total de veículos cadastrados: " + frota.size());
+                                System.out.println("------------------------------------");
+                                for (VeiculoStructure v : frota.values()) {
+                                    v.exibirDados();
+                                    if (v instanceof Rastreavel rastreado) {
+                                        boolean conectado = rastreado.conectarSatelite("GEX-123");
+                                        System.out.println(">> Status do Satélite: " + (conectado ? "CONECTADO" : "FALHA NA CONEXÃO"));
                                     }
-                                } catch (DateTimeParseException e) {
-                                    System.out.println("\n❌ ERRO DE FORMATAÇÃO: Você digitou a data em um formato inválido! Use o padrão dd/mm/aaaa.");
+                                    System.out.println("------------------------------------");
                                 }
                             }
+                            break;
+
+                        case 4:
+                            System.out.println("\n--- Locação de Veículo ---");
+                            if (frota.isEmpty()) {
+                                System.out.println("Nenhum veículo disponível no sistema para alugar.");
+                                break;
+                            }
+                            System.out.print("Digite o modelo do veículo que deseja alugar: ");
+                            String modeloAluguel = scanner.nextLine().toUpperCase();
+
+                            if (!frota.containsKey(modeloAluguel)) {
+                                System.out.println("❌ Veículo não encontrado na frota!");
+                                break;
+                            }
+
+                            VeiculoStructure veiculoAlugar = frota.get(modeloAluguel);
+
+                            if (veiculoAlugar.getStatus() == StatusVeiculo.ALOCADO) {
+                                System.out.println("⚠️ Este veículo já está alugado no momento!");
+                                break;
+                            }
+
+                            try {
+                                System.out.print("Digite a data de RETIRADA (dd/mm/aaaa): ");
+                                String dataRetText = scanner.nextLine();
+                                LocalDate dataRetirada = LocalDate.parse(dataRetText, formatador);
+
+                                System.out.print("Digite a data de DEVOLUÇÃO (dd/mm/aaaa): ");
+                                String dataDevText = scanner.nextLine();
+                                LocalDate dataDevolucao = LocalDate.parse(dataDevText, formatador);
+
+                                BigDecimal valorTotal = veiculoAlugar.calcularAluguel(dataRetirada, dataDevolucao);
+                                veiculoAlugar.setStatus(StatusVeiculo.ALOCADO);
+
+                                System.out.println("\n✅ CONTRATO DE LOCAÇÃO EMITIDO!");
+                                System.out.println("Veículo: " + veiculoAlugar.getModelo());
+                                System.out.println("Valor total do período: R$ " + valorTotal);
+                            } catch (DateTimeParseException e) {
+                                System.out.println("\n❌ ERRO DE FORMATAÇÃO: Formato de data inválido! Use o padrão dd/mm/aaaa.");
+                            }
+                            break;
+
+                        case 5:
+                            System.out.println("\n--- Devolução de Veículo ---");
+                            if (frota.isEmpty()) {
+                                System.out.println("Nenhum veículo cadastrado no sistema.");
+                                break;
+                            }
+                            System.out.print("Digite o modelo do veículo que está sendo devolvido: ");
+                            String modeloDevolucao = scanner.nextLine().toUpperCase();
+
+                            if (!frota.containsKey(modeloDevolucao)) {
+                                System.out.println("❌ Veículo não encontrado na frota!");
+                                break;
+                            }
+
+                            VeiculoStructure veiculoDevolver = frota.get(modeloDevolucao);
+
+                            if (veiculoDevolver.getStatus() == StatusVeiculo.DISPONIVEL) {
+                                System.out.println("⚠️ Este veículo já consta como DISPONÍVEL no pátio.");
+                                break;
+                            }
+
+                            veiculoDevolver.setStatus(StatusVeiculo.DISPONIVEL);
+                            System.out.println("✅ Devolução concluída! O veículo " + veiculoDevolver.getModelo() + " agora está DISPONÍVEL.");
                             break;
 
                         case 0:
@@ -114,11 +164,11 @@ public class Main {
                             break;
 
                         default:
-                            System.out.println("⚠️ Opção inválida! Escolha um número de 0 a 3.");
+                            System.out.println("⚠️ Opção inválida! Escolha um número de 0 a 5.");
                     }
 
                 } catch (InputMismatchException e) {
-                    System.out.println("\n❌ ERRO DE ENTRADA: Você digitou letras em vez de números.");
+                    System.out.println("\n❌ ERRO DE ENTRADA: Você digitou dados em um formato inválido.");
                     scanner.nextLine();
                 } catch (ValorInvalidoException e) {
                     System.out.println("\n❌ ERRO DE NEGÓCIO: " + e.getMessage());
@@ -149,6 +199,5 @@ public class Main {
         };
     }
 }
-
 
 

@@ -5,8 +5,8 @@ import java.time.temporal.ChronoUnit;
 public class VeiculoPasseio extends VeiculoStructure {
     private int passageiros;
 
-    public VeiculoPasseio(String modelo, BigDecimal valorDiaria, int passageiros, TipoCombustivel tipo) throws ValorInvalidoException {
-        super(modelo, valorDiaria, tipo);
+    public VeiculoPasseio(String modelo, BigDecimal valorDiaria, int anoFabricacao, int passageiros, TipoCombustivel tipo) throws ValorInvalidoException {
+        super(modelo, valorDiaria, anoFabricacao, tipo);
         this.passageiros = passageiros;
     }
 
@@ -30,7 +30,8 @@ public class VeiculoPasseio extends VeiculoStructure {
 
     @Override
     public void exibirDados() {
-        System.out.println("Modelo: " + getModelo() + " | Diária: R$ " + getValorDiaria() + " | Passageiros: " + this.passageiros + " | Combustível: " + getTipoCombustivel());
+        super.exibirDados();
+        System.out.println("Especificações -> Passageiros: " + this.passageiros);
     }
 
     public int getCapacidadePassageiros() {

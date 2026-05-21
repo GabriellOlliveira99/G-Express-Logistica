@@ -18,7 +18,7 @@ public class ArquivoUtil {
                         ? String.valueOf(((VeiculoCarga) v).getCapacidadeToneladas())
                         : String.valueOf(((VeiculoPasseio) v).getCapacidadePassageiros());
 
-                pw.println(tipo + ";" + v.getModelo() + ";" + v.getValorDiaria() + ";" + v.getTipoCombustivel() + ";" + dadoEspecifico);
+                pw.println(tipo + ";" + v.getModelo() + ";" + v.getValorDiaria() + ";" + v.getTipoCombustivel() + ";" + v.getAnoFabricacao() + ";" + v.getStatus() + ";" + dadoEspecifico);
             }
             System.out.println("💾 Frota salva com sucesso em 'frota.txt'!");
 
@@ -44,12 +44,18 @@ public class ArquivoUtil {
                 String modelo = p[1];
                 BigDecimal valor = new BigDecimal(p[2]);
                 TipoCombustivel combustivel = TipoCombustivel.valueOf(p[3]);
-                String dadoEsp = p[4];
+                int ano = Integer.parseInt(p[4]);
+                StatusVeiculo status = StatusVeiculo.valueOf(p[5]);
+                String dadoEsp = p[6];
 
                 if (tipo.equals("CARGA")) {
-                    mapa.put(modelo.toUpperCase(), new VeiculoCarga(modelo, valor, Double.parseDouble(dadoEsp), combustivel));
+                    VeiculoCarga vCarga = new VeiculoCarga(modelo, valor, ano, Double.parseDouble(dadoEsp), combustivel);
+                    vCarga.setStatus(status);
+                    mapa.put(modelo.toUpperCase(), vCarga);
                 } else {
-                    mapa.put(modelo.toUpperCase(), new VeiculoPasseio(modelo, valor, Integer.parseInt(dadoEsp), combustivel));
+                    VeiculoPasseio vPasseio = new VeiculoPasseio(modelo, valor, ano, Integer.parseInt(dadoEsp), combustivel);
+                    vPasseio.setStatus(status);
+                    mapa.put(modelo.toUpperCase(), vPasseio);
                 }
             }
         } catch (Exception e) {

@@ -6,8 +6,8 @@ import java.time.temporal.ChronoUnit;
 public class VeiculoCarga extends VeiculoStructure implements Rastreavel {
     private double capacidadeToneladas;
 
-    public VeiculoCarga(String modelo, BigDecimal valorDiaria, double capacidadeToneladas, TipoCombustivel tipo) throws ValorInvalidoException {
-        super(modelo, valorDiaria, tipo);
+    public VeiculoCarga(String modelo, BigDecimal valorDiaria, int anoFabricacao, double capacidadeToneladas, TipoCombustivel tipo) throws ValorInvalidoException {
+        super(modelo, valorDiaria, anoFabricacao, tipo);
         setCapacidadeToneladas(capacidadeToneladas);
     }
 
@@ -36,7 +36,8 @@ public class VeiculoCarga extends VeiculoStructure implements Rastreavel {
 
     @Override
     public void exibirDados() {
-        System.out.println("Modelo: " + getModelo() + " | Diária Base: R$ " + getValorDiaria() + " | Capacidade: " + this.capacidadeToneladas + "t" + " | Combustível: " + getTipoCombustivel());
+        super.exibirDados();
+        System.out.println("Especificações -> Capacidade: " + this.capacidadeToneladas + "t");
     }
 
     public void setCapacidadeToneladas(double capacidadeToneladas) throws ValorInvalidoException {
