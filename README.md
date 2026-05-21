@@ -4,15 +4,15 @@ Este projeto foi desenvolvido como parte dos meus estudos avançados em **Progra
 
 ## 🚀 Conceitos de POO Aplicados:
 
-- **Abstração:** Utilização da classe abstrata `VeiculoStructure` como molde principal, garantindo que nenhum veículo seja instanciado sem as propriedades básicas.
-- **Herança:** Implementação de classes especializadas (`VeiculoPasseio` e `VeiculoCarga`) que herdam e estendem o comportamento da classe base.
+- **Abstração:** Utilização da classe abstrata `br.com.gexpress.model.VeiculoStructure` como molde principal, garantindo que nenhum veículo seja instanciado sem as propriedades básicas.
+- **Herança:** Implementação de classes especializadas (`br.com.gexpress.model.VeiculoPasseio` e `br.com.gexpress.model.VeiculoCarga`) que herdam e estendem o comportamento da classe base.
 - **Polimorfismo:** Sobrescrita de métodos (`@Override`) para cálculos dinâmicos de aluguel e exibição customizada de dados.
-- **Interfaces:** Uso da interface `Rastreavel` para garantir que apenas veículos específicos possuam o contrato de conexão via satélite.
-- **Encapsulamento & Enums:** Uso de `TipoCombustivel` e `StatusVeiculo` para garantir que o sistema mude de estado de forma segura, eliminando falhas de consistência e inputs inválidos.
+- **Interfaces:** Uso da interface `br.com.gexpress.model.Rastreavel` para garantir que apenas veículos específicos possuam o contrato de conexão via satélite.
+- **Encapsulamento & Enums:** Uso de `br.com.gexpress.model.TipoCombustivel` e `br.com.gexpress.model.StatusVeiculo` para garantir que o sistema mude de estado de forma segura, eliminando falhas de consistência e inputs inválidos.
 
 ## 🛡️ Tratamento de Erros e Segurança:
 
-- **Custom Exceptions:** Criação da `ValorInvalidoException` para impedir que veículos nasçam com valores negativos/zerados ou com anos de fabricação incompatíveis.
+- **Custom Exceptions:** Criação da `br.com.gexpress.exception.ValorInvalidoException` para impedir que veículos nasçam com valores negativos/zerados ou com anos de fabricação incompatíveis.
 - **Data Validation:** Uso de blocos `try-catch` na `Main` para capturar erros de entrada (`InputMismatchException`) e regras de negócio, mantendo o sistema estável mesmo após falhas do usuário.
 - **Clean Code:** Organização rigorosa de métodos de acesso (Getters/Setters) agrupados por atributos e isolamento de métodos estáticos para o fluxo do menu.
 

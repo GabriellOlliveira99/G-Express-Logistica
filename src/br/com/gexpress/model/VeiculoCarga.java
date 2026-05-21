@@ -1,3 +1,7 @@
+package br.com.gexpress.model;
+
+import br.com.gexpress.exception.ValorInvalidoException;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;

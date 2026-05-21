@@ -1,3 +1,7 @@
+package br.com.gexpress.repository;
+
+import br.com.gexpress.model.*;
+
 import java.io.*;
 import java.math.BigDecimal;
 import java.util.HashMap;
