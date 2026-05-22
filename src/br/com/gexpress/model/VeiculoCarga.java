@@ -54,4 +54,6 @@ public class VeiculoCarga extends VeiculoStructure implements Rastreavel {
     public double getCapacidadeToneladas() {
         return capacidadeToneladas;
     }
+
+
 }

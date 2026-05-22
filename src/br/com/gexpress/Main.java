@@ -1,3 +1,5 @@
+package br.com.gexpress;
+
 import br.com.gexpress.exception.ValorInvalidoException;
 import br.com.gexpress.model.*;
 import br.com.gexpress.service.FrotaService;
@@ -74,7 +76,9 @@ public class Main {
         TipoCombustivel combustCarga = escolherCombustivel();
 
         VeiculoCarga caminhao = new VeiculoCarga(modCarga, diariaCarga, anoCarga, capCarga, combustCarga);
+
         frotaService.cadastrarVeiculo(caminhao);
+
         System.out.println("✅ Caminhão cadastrado com sucesso!");
     }
 
@@ -87,7 +91,9 @@ public class Main {
         TipoCombustivel combustPass = escolherCombustivel();
 
         VeiculoPasseio carro = new VeiculoPasseio(modPasseio, diariaPasseio, anoPasseio, qtdPassageiros, combustPass);
+
         frotaService.cadastrarVeiculo(carro);
+
         System.out.println("✅ Carro de passeio cadastrado com sucesso!");
     }
 
@@ -176,7 +182,6 @@ public class Main {
         System.out.println("✅ Devolução concluída! O veículo " + veiculoDevolver.getModelo() + " agora está DISPONÍVEL.");
     }
 
-    // --- MÉTODOS AUXILIARES DE ENTRADA (CLEAN CODE) ---
     private static String lerTexto(String mensagem) {
         System.out.print(mensagem);
         return scanner.nextLine();
