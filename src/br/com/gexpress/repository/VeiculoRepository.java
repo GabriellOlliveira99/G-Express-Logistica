@@ -1,12 +1,7 @@
 package br.com.gexpress.repository;
-
 import br.com.gexpress.model.VeiculoCarga;
 import br.com.gexpress.model.VeiculoPasseio;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class VeiculoRepository {
 
@@ -78,4 +73,54 @@ public class VeiculoRepository {
         }
         return false;
     }
+
+    public java.util.List<br.com.gexpress.model.VeiculoStructure> buscarTodos() {
+        java.util.List<br.com.gexpress.model.VeiculoStructure> lista = new java.util.ArrayList<>();
+        String sql = "SELECT * FROM veiculos";
+
+        try (Connection conn = DriverManager.getConnection(URL, USUARIO, SENHA);
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                String tipo = rs.getString("tipo_veiculo");
+                String modelo = rs.getString("modelo");
+                java.math.BigDecimal valorDiaria = rs.getBigDecimal("valor_diaria");
+                int ano = rs.getInt("ano_fabricacao");
+                br.com.gexpress.model.TipoCombustivel comb = br.com.gexpress.model.TipoCombustivel.valueOf(rs.getString("tipo_combustivel"));
+                br.com.gexpress.model.StatusVeiculo status = br.com.gexpress.model.StatusVeiculo.valueOf(rs.getString("status"));
+
+                br.com.gexpress.model.VeiculoStructure v;
+                if ("CARGA".equals(tipo)) {
+                    double capacidade = rs.getDouble("capacidade_carga");
+                    v = new br.com.gexpress.model.VeiculoCarga(modelo, valorDiaria, ano, capacidade, comb);
+                } else {
+                    int passageiros = rs.getInt("qtd_passageiros");
+                    v = new br.com.gexpress.model.VeiculoPasseio(modelo, valorDiaria, ano, passageiros, comb);
+                }
+                v.setStatus(status);
+                lista.add(v);
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Erro ao buscar veículos no banco: " + e.getMessage());
+        }
+        return lista;
+    }
+
+    public void atualizarStatus(String modelo, br.com.gexpress.model.StatusVeiculo novoStatus) {
+        String sql = "UPDATE veiculos SET status = ? WHERE UPPER(TRIM(modelo)) = UPPER(TRIM(?))";
+
+        try (Connection conn = DriverManager.getConnection(URL, USUARIO, SENHA);
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, novoStatus.name());
+            stmt.setString(2, modelo);
+            stmt.executeUpdate();
+            System.out.println("💾 [BANCO DE DADOS] Status atualizado no PostgreSQL!");
+
+        } catch (SQLException e) {
+            System.out.println("❌ Erro ao atualizar status no banco: " + e.getMessage());
+        }
+    }
 }
+

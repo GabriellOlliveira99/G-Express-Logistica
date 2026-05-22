@@ -1,7 +1,5 @@
 package br.com.gexpress.model;
-
 import br.com.gexpress.exception.ValorInvalidoException;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 

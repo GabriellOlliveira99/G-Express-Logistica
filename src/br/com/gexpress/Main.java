@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.InputMismatchException;
-import java.util.Map;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -34,8 +34,6 @@ public class Main {
                         case 4 -> alugarVeiculo();
                         case 5 -> devolverVeiculo();
                         case 0 -> {
-                            System.out.println("\n💾 Salvando dados da frota...");
-                            frotaService.salvarDados();
                             rodando = false;
                             System.out.println("Saindo...");
                         }
@@ -99,7 +97,7 @@ public class Main {
 
     private static void listarRelatorioFrota() {
         System.out.println("\n=== RELATÓRIO DE FROTA G-EXPRESS ===");
-        Map<String, VeiculoStructure> frota = frotaService.obterFrota();
+        List<VeiculoStructure> frota = frotaService.obterFrota();
 
         if (frota.isEmpty()) {
             System.out.println("Nenhum veículo na frota.");
@@ -108,7 +106,7 @@ public class Main {
 
         System.out.println("Total de veículos cadastrados: " + frota.size());
         System.out.println("------------------------------------");
-        for (VeiculoStructure v : frota.values()) {
+        for (VeiculoStructure v : frota) {
             v.exibirDados();
             if (v instanceof Rastreavel rastreado) {
                 boolean conectado = rastreado.conectarSatelite("GEX-123");
@@ -120,9 +118,8 @@ public class Main {
 
     private static void alugarVeiculo() {
         System.out.println("\n--- Locação de Veículo ---");
-        Map<String, VeiculoStructure> frota = frotaService.obterFrota();
 
-        if (frota.isEmpty()) {
+        if (frotaService.obterFrota().isEmpty()) {
             System.out.println("Nenhum veículo disponível no sistema para alugar.");
             return;
         }
@@ -148,7 +145,9 @@ public class Main {
             LocalDate dataDevolucao = LocalDate.parse(dataDevText, formatador);
 
             BigDecimal valorTotal = veiculoAlugar.calcularAluguel(dataRetirada, dataDevolucao);
-            veiculoAlugar.setStatus(StatusVeiculo.ALOCADO);
+
+
+            frotaService.alterarStatusVeiculo(veiculoAlugar.getModelo(), StatusVeiculo.ALOCADO);
 
             System.out.println("\n✅ CONTRATO DE LOCAÇÃO EMITIDO!");
             System.out.println("Veículo: " + veiculoAlugar.getModelo());
@@ -178,7 +177,7 @@ public class Main {
             return;
         }
 
-        veiculoDevolver.setStatus(StatusVeiculo.DISPONIVEL);
+        frotaService.alterarStatusVeiculo(veiculoDevolver.getModelo(), StatusVeiculo.DISPONIVEL);
         System.out.println("✅ Devolução concluída! O veículo " + veiculoDevolver.getModelo() + " agora está DISPONÍVEL.");
     }
 
